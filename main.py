@@ -10,10 +10,29 @@ load_dotenv()
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
 LANGUAGES = {
-    "no": "Norwegian",
-    "es": "Spanish",
-    "fr": "French",
-    # Add more as needed
+    "no": "Norwegian",        # Germanic (Indo-European)
+    "es": "Spanish",          # Romance (Indo-European)
+    "ru": "Russian",          # Slavic (Indo-European)
+    "el": "Greek",            # Hellenic (Indo-European)
+    "tr": "Turkish",          # Turkic
+    "ar": "Arabic",           # Semitic (Afro-Asiatic)
+    "he": "Hebrew",           # Semitic (Afro-Asiatic)
+    "zh": "Mandarin",          # Sino-Tibetan
+    "yue": "Cantonese",       # Sino-Tibetan
+    "ja": "Japanese",         # Japonic
+    "ko": "Korean",           # Koreanic
+    "vi": "Vietnamese",       # Austroasiatic
+    "th": "Thai",             # Kra–Dai
+    "sw": "Swahili",          # Bantu (Niger–Congo)
+    "hi": "Hindi",            # Indic (Indo-European)
+    "bn": "Bengali",          # Indic (Indo-European)
+    "fi": "Finnish",          # Uralic
+    "hu": "Hungarian",        # Uralic
+    "ms": "Malay",            # Austronesian
+    "id": "Indonesian",       # Austronesian
+    "ta": "Tamil",            # Dravidian
+    "fa": "Persian",          # Iranian (Indo-European)
+
 }
 
 def load_goals():
