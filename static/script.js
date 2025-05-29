@@ -39,11 +39,12 @@ function send() {
   });
 }
 
-// --- Grading logic ---
 function gradeAttempt() {
   const attempt = document.getElementById('attempt').value.trim();
   const goal = document.getElementById('goal-sentence').textContent.trim();
   if (!attempt) return;
+  if (!window.confirm("Are you sure you want to submit this answer for grading?")) return;
+
   document.getElementById('grade-btn').disabled = true;
   document.getElementById('grade-result').textContent = "Grading...";
 
@@ -55,13 +56,30 @@ function gradeAttempt() {
   .then(res => res.json())
   .then(data => {
     document.getElementById('grade-result').textContent = `Score: ${data.score} / 10. ${data.feedback}`;
+    document.getElementById('replay-btn').style.display = 'inline-block';
+    document.getElementById('grade-btn').style.display = 'none';
+    document.getElementById('attempt').disabled = true;
+    document.getElementById('chat-container').style.display = 'none';
   })
   .catch(() => {
     document.getElementById('grade-result').textContent = "Sorry, grading failed.";
-  })
-  .finally(() => {
-    document.getElementById('grade-btn').disabled = false;
   });
+}
+
+document.getElementById('replay-btn').onclick = () => {
+  window.location.href = '/select_language';
+};
+
+function showReplayButton() {
+  let replay = document.getElementById('replay-btn');
+  if (!replay) {
+    replay = document.createElement('button');
+    replay.id = 'replay-btn';
+    replay.textContent = 'Replay';
+    replay.style.marginTop = '16px';
+    replay.onclick = () => window.location.reload();
+    document.getElementById('grade-container').appendChild(replay);
+  }
 }
 
 document.addEventListener('DOMContentLoaded', () => {

@@ -12,8 +12,9 @@
         <span id="goal-sentence">{{ goal }}</span>
       </div>
       <div id="grade-container">
-        <input id="attempt" autocomplete="off" placeholder="Write the goal sentence in Norwegian..." />
+        <input id="attempt" autocomplete="off" placeholder="Write the goal sentence in {{ language }}..." />
         <button id="grade-btn">Grade</button>
+        <button id="replay-btn" style="display:none;">Replay</button>
       </div>
       <span id="grade-result"></span>
     </div>

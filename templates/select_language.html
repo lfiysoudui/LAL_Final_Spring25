@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Select Language</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div id="main-container">
+    <div id="goal-input-container" style="width: 400px; margin: 60px auto;">
+      <h2 style="margin-bottom: 24px; text-align: center;">Select a Language</h2>
+      <form method="post" style="display: flex; flex-direction: column; gap: 16px;">
+        <select name="language" style="padding: 8px; border-radius: 4px; border: 1px solid #ccc;">
+          {% for code, lang in languages.items() %}
+            <option value="{{ code }}">{{ lang }}</option>
+          {% endfor %}
+        </select>
+        <button type="submit">Start Game</button>
+      </form>
+    </div>
+  </div>
+</body>
+</html>

@@ -25,11 +25,14 @@ body {
   display: flex;
   gap: 8px;
   align-items: center;
-  margin: 0;
-  background: none;
-  box-shadow: none;
-  padding: 0;
-  max-width: none;
+}
+#replay-btn {
+  background: mediumvioletred;
+  color: #fff;
+  margin-left: 0;
+}
+#replay-btn:hover {
+  background: violet;
 }
 #chat-container {
   background: whitesmoke;
