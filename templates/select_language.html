@@ -1,22 +1,82 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Select Language</title>
+  <title>Select Language & Difficulty</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+    .difficulty-row {
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+      margin-top: 24px;
+      margin-bottom: 16px;
+    }
+    .difficulty-blob {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 14px;
+      color: #fff;
+      cursor: pointer;
+      transition: transform 0.1s, box-shadow 0.1s;
+      border: 3px solid transparent;
+    }
+    .difficulty-blob.selected.easy {
+      box-shadow: 0 0 6px 3px #4caf50;
+      transform: scale(1.15);
+    }
+    .difficulty-blob.selected.medium {
+      box-shadow: 0 0 6px 3px #2196f3;
+      transform: scale(1.15);
+    }
+    .difficulty-blob.selected.hard {
+      box-shadow: 0 0 6px 3px #ff9800;
+      transform: scale(1.15);
+    }
+    .difficulty-blob.selected.crazy {
+      box-shadow: 0 0 6px 3px #e91e63;
+      transform: scale(1.15);
+    }
+    .easy { background: #4caf50; }
+    .medium { background: #2196f3; }
+    .hard { background: #ff9800; }
+    .crazy { background: #e91e63; }
+  </style>
 </head>
 <body>
   <div id="main-container">
-    <div id="goal-input-container" style="width: 400px; margin: 60px auto;">
-      <h2 style="margin-bottom: 24px; text-align: center;">Select a Language</h2>
-      <form method="post" style="display: flex; flex-direction: column; gap: 16px;">
+    <div id="goal-input-container" style="width: flex; margin: 60px auto;">
+      <h2 style="margin-bottom: 24px; text-align: center;">Select Language & Difficulty</h2>
+      <form id="lang-diff-form" method="post" style="display: flex; flex-direction: column; gap: 16px;">
         <select name="language" style="padding: 8px; border-radius: 4px; border: 1px solid #ccc;">
           {% for code, lang in languages.items() %}
             <option value="{{ code }}">{{ lang }}</option>
           {% endfor %}
         </select>
+        <div class="difficulty-row">
+          <div class="difficulty-blob easy selected" data-difficulty="easy">Easy</div>
+          <div class="difficulty-blob medium" data-difficulty="medium">Medium</div>
+          <div class="difficulty-blob hard" data-difficulty="hard">Hard</div>
+          <div class="difficulty-blob crazy" data-difficulty="crazy">Crazy</div>
+        </div>
+        <input type="hidden" name="difficulty" id="difficulty-input" value="easy">
         <button type="submit">Start Game</button>
       </form>
     </div>
   </div>
+  <script>
+    // Blob selection logic
+    document.querySelectorAll('.difficulty-blob').forEach(blob => {
+      blob.onclick = function() {
+        document.querySelectorAll('.difficulty-blob').forEach(b => b.classList.remove('selected'));
+        this.classList.add('selected');
+        document.getElementById('difficulty-input').value = this.dataset.difficulty;
+      }
+    });
+  </script>
 </body>
 </html>

@@ -32,11 +32,15 @@ LANGUAGES = {
     "id": "Indonesian",       # Austronesian
     "ta": "Tamil",            # Dravidian
     "fa": "Persian",          # Iranian (Indo-European)
-
 }
 
-def load_goals():
-    with open("goals.txt", encoding="utf-8") as f:
+DIFFICULTY_LEVELS = ["easy", "medium", "hard", "crazy"]
+
+def load_goals(difficulty):
+    if difficulty not in DIFFICULTY_LEVELS:
+        raise ValueError("Invalid difficulty level")
+    filename = os.path.join("goals", f"{difficulty}.txt")
+    with open(filename, encoding="utf-8") as f:
         return [line.strip() for line in f if line.strip()]
 
 @app.route("/")
@@ -47,15 +51,17 @@ def index():
 def select_language():
     if request.method == "POST":
         session["language"] = request.form["language"]
+        session["difficulty"] = request.form["difficulty"]
         return redirect(url_for("game"))
     return render_template("select_language.html", languages=LANGUAGES)
 
 @app.route("/game")
 def game():
     language = session.get("language", "no")
-    goals = load_goals()
+    difficulty = session.get("difficulty", "easy")
+    goals = load_goals(difficulty)
     goal = random.choice(goals)
-    return render_template("index.html", goal=goal, language=LANGUAGES[language])
+    return render_template("index.html", goal=goal, language=LANGUAGES[language], difficulty=difficulty)
 
 def ask_gemini(messages, language):
     rule_prompt = (
