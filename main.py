@@ -1,9 +1,9 @@
 from flask import Flask, request, jsonify, render_template, session, redirect, url_for
 from dotenv import load_dotenv
-import os, requests, random
+import os, requests, random, secrets
 
 app = Flask(__name__)
-app.secret_key = "your_secret_key"  # Needed for session
+app.secret_key = secrets.token_hex(32)
 
 GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent"
 load_dotenv()
