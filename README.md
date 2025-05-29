@@ -25,5 +25,5 @@ Replace `your_api_key_here` with your actual Gemini API key. If you don't have o
 
 4. Run the application:
 ```bash
-python app.py
+gunicorn --bind 0.0.0.0:8000 main:app
 ```    
