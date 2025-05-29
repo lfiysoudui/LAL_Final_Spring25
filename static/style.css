@@ -1,0 +1,108 @@
+body {
+  font-family: Arial, sans-serif;
+  background: lightsteelblue;
+}
+#main-container {
+  max-width: 600px;
+  margin: 40px auto;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+#goal-input-container {
+  background: #fffbe6;
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+#goal-container {
+  font-size: 1.1em;
+}
+#grade-container {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin: 0;
+  background: none;
+  box-shadow: none;
+  padding: 0;
+  max-width: none;
+}
+#chat-container {
+  background: whitesmoke;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  height: 480px;
+}
+#chat {
+  flex: 1;
+  min-height: 0;
+  max-height: 400px;
+  overflow-y: auto;
+  margin-bottom: 16px;
+  background: #f8f8f8;
+  border-radius: 6px;
+  padding: 8px;
+}
+.msg {
+  margin: 10px 0;
+  padding: 8px 12px;
+  border-radius: 6px;
+  max-width: 80%;
+  word-break: break-word;
+}
+.user {
+  background: #e3f0ff;
+  color: midnightblue;
+  align-self: flex-end;
+  margin-left: auto;
+}
+.gemini {
+  background: #e6f9ea;
+  color: teal;
+  align-self: flex-start;
+  margin-right: auto;
+}
+#input-row {
+  display: flex;
+  gap: 8px;
+}
+#attempt,
+#input {
+  flex: 1;
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+#input:focus {
+  outline-color: midnightblue;
+}
+button {
+  padding: 8px 16px;
+  border-radius: 4px;
+  border: none;
+  background: midnightblue;
+  color: #fff;
+  cursor: pointer;
+}
+button:hover {
+  background: #0056b3;
+}
+button:disabled {
+  background: #aaa;
+}
+#grade-result {
+  display: block;
+  color: teal;
+  font-size: 0.95em;
+  min-width: 120px;
+  font-weight: bold;
+  margin-top: 4px;
+  margin-left: 8px;
+}

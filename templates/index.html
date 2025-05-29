@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Gemini Chat Game</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div id="main-container">
+    <div id="goal-input-container">
+      <div id="goal-container">
+        <b>Goal sentence:</b>
+        <span id="goal-sentence">{{ goal }}</span>
+      </div>
+      <div id="grade-container">
+        <input id="attempt" autocomplete="off" placeholder="Write the goal sentence in Norwegian..." />
+        <button id="grade-btn">Grade</button>
+      </div>
+      <span id="grade-result"></span>
+    </div>
+    <div id="chat-container">
+      <div id="chat"></div>
+      <div id="input-row">
+        <input id="input" autocomplete="off" placeholder="Type your message..." />
+        <button>Send</button>
+      </div>
+    </div>
+  </div>
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
