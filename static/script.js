@@ -46,6 +46,7 @@ function gradeAttempt() {
   if (!window.confirm("Are you sure you want to submit this answer for grading?")) return;
 
   document.getElementById('grade-btn').disabled = true;
+  document.getElementById('attempt').disabled = true;
   document.getElementById('grade-result').textContent = "Grading...";
 
   fetch('/grade', {
@@ -58,11 +59,14 @@ function gradeAttempt() {
     document.getElementById('grade-result').textContent = `Score: ${data.score} / 10. ${data.feedback}`;
     document.getElementById('replay-btn').style.display = 'inline-block';
     document.getElementById('grade-btn').style.display = 'none';
-    document.getElementById('attempt').disabled = true;
-    document.getElementById('chat-container').style.display = 'none';
+    // Disable chat input and send button
+    document.getElementById('input').disabled = true;
+    document.querySelector('#input-row button').disabled = true;
   })
   .catch(() => {
     document.getElementById('grade-result').textContent = "Sorry, grading failed.";
+    document.getElementById('grade-btn').disabled = false;
+    document.getElementById('attempt').disabled = false;
   });
 }
 

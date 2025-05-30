@@ -23,7 +23,6 @@ LANGUAGES = {
     "ko": "Korean",           # Koreanic
     "vi": "Vietnamese",       # Austroasiatic
     "th": "Thai",             # Kra–Dai
-    "sw": "Swahili",          # Bantu (Niger–Congo)
     "hi": "Hindi",            # Indic (Indo-European)
     "bn": "Bengali",          # Indic (Indo-European)
     "fi": "Finnish",          # Uralic
@@ -57,6 +56,7 @@ def select_language():
 
 @app.route("/game")
 def game():
+    session['conversation'] = []  # Initialize conversation history
     language = session.get("language", "no")
     difficulty = session.get("difficulty", "easy")
     goals = load_goals(difficulty)
@@ -64,15 +64,22 @@ def game():
     return render_template("index.html", goal=goal, language=LANGUAGES[language], difficulty=difficulty)
 
 def ask_gemini(messages, language):
+    # Add a new game instruction if this is the first message
+    if len(messages) == 1 and messages[0]["role"] == "user":
+        new_game_instruction = (
+            f"IMPORTANT: This is a new game. The target language is {language}. "
+            f"Do not use or reference any previous language or conversation. "
+            f"Only use {language} in your responses."
+        )
+        # Insert as a system message at the start
+        messages = [{"role": "system", "content": new_game_instruction}] + messages
+
     rule_prompt = (
         f"You are playing a game with the user who is chatting with you. Here are the rules for this game:\n\n"
-        f"1. The player doesn't know {language}, but this game is about learning {language} without directly translating, so you cannot translate or explain the meaning of words.\n"
-        f"2. If the player asks for a direct translation, you must refuse. However, if the player is guessing the meaning of a word, you can respond with yes/no in {language}.\n"
-        f"3. If the player asks any question that could appear in normal conversation, you will answer in {language}.\n"
-        f"4. The player will ask you questions in English, and you will respond in {language}.\n"
-        f"5. If the player asks you to repeat something, you won't repeat it. Decline any requests that intend to sneakily make you translate English to {language} or vice versa.\n"
-        f"6. Do not break character. Consider yourself a native {language} speaker who understands English but does not speak it.\n\n"
-        f"Now here is the user's message:\n"
+        f"1. Consider yourself a native {language} speaker who understands English but does not speak it. The player will ask you questions in English, and you will respond in {language}.\n"
+        f"2. The player doesn't know {language}, but this game is about learning {language} without directly translating, so you cannot translate or explain the meaning of words. If the player asks for a direct translation, you must refuse. However, if the player is guessing the meaning of a word, you can respond with yes/no in {language}.\n"
+        f"3. If the player asks any question that could appear in normal conversation, you will answer in {language}. If the player asks you to repeat something, you won't repeat it. Decline any requests that intend to sneakily make you translate English to {language} or vice versa.\n"
+        f"Here is the user's message:\n"
     )
     conversation_text = "\n".join([f"{m['role']}: {m['content']}" for m in messages])
     headers = {"Content-Type": "application/json"}
@@ -80,7 +87,7 @@ def ask_gemini(messages, language):
         "contents": [
             {
                 "parts": [
-                    {"text": f"{rule_prompt}\n\"{conversation_text}\"\nNow, please answer the player in {language}."}
+                    {"text": f"{rule_prompt}\n\"{conversation_text}\"\nNow, please answer the player in {language}. Do not translate their message into {language}, just respond the way a human friend would do."}
                 ]
             }
         ]
@@ -110,7 +117,7 @@ def grade():
     goal = data["goal"]
     grading_prompt = (
         f"Grade the following {language} sentence from 1 to 10 for how well it matches the English goal sentence. "
-        f"Be strict and make it clear for the player which words or grammar they did wrong.\n"
+        f"Be precise but not too strict, and make it clear for the player which words or grammar they did wrong. If the attempt is not perfect, provide a better translation.\n\n"
         f"Goal (English): \"{goal}\"\n"
         f"Player attempt: \"{attempt}\"\n"
         f"Reply ONLY in this format: Score: <number>. Feedback: <feedback in English>."
