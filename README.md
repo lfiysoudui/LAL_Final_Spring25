@@ -21,7 +21,7 @@ pip install -r requirements.txt
 echo "GEMINI_API_KEY=your_api_key_here" > .env
 ```
 
-Replace `your_api_key_here` with your actual Gemini API key. If you don't have one, you can sign up for access at [Google Cloud](https://cloud.google.com/gemini).
+Replace `your_api_key_here` with your actual Gemini API key. If you don't have one, you can sign up for access at [Google Cloud](https://ai.google.dev/gemini-api/docs/api-key).
 
 4. Run the application:
 ```bash
