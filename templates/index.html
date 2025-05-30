@@ -8,12 +8,12 @@
 <body>
   <div id="page-wrapper">
     <div id="main-container">
-      <div id="hearts-container">
-        {% for i in range(hearts) %}
-          <span class="heart">❤️</span>
-        {% endfor %}
-      </div>
       <div id="goal-input-container">
+        <div id="hearts-container">
+          {% for i in range(hearts) %}
+            <span class="heart">❤️</span>
+          {% endfor %}
+        </div>
         <div id="goal-container">
           <b>Goal sentence:</b>
           <span id="goal-sentence">{{ goal }}</span>
@@ -26,6 +26,7 @@
         <span id="grade-result"></span>
       </div>
       <div id="chat-container">
+        <b>Chat with Gemini</b>
         <div id="chat"></div>
         <div id="input-row">
           <input id="input" autocomplete="off" placeholder="Type your message..." />
@@ -34,7 +35,7 @@
       </div>
     </div>
     <div id="sidebar-container">
-      <b>Word list:</b>
+      <b>Word List</b>
       <div id="word-list"></div>
       <div id="word-list-input">
         <input id="new-word" autocomplete="off" placeholder="New word"/>

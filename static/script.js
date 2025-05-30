@@ -207,10 +207,10 @@ document.addEventListener('DOMContentLoaded', () => {
 function updateHearts(hearts) {
   const heartsContainer = document.getElementById('hearts-container');
   heartsContainer.innerHTML = ''; // Clear existing hearts
-  for (let i = 0; i < hearts; i++) {
+  for (let i = 0; i < 3; i++) {
     const heartSpan = document.createElement('span');
     heartSpan.className = 'heart';
-    heartSpan.textContent = '❤️';
+    heartSpan.textContent = i < hearts ? '❤️' : '🖤';
     heartsContainer.appendChild(heartSpan);
   }
 }

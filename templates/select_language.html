@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Select Language & Difficulty</title>
+  <title>No Translation! Setting</title>
   <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <style>
@@ -46,30 +46,50 @@
     .medium { background: #2196f3; }
     .hard { background: #ff9800; }
     .crazy { background: #e91e63; }
+    .rules-box {
+      background: whitesmoke;
+      border-radius: 8px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+      padding: 18px 20px;
+      margin-bottom: 18px;
+      font-size: 1.05em;
+    }
   </style>
 </head>
 <body>
-  <div id="main-container">
-    <div id="goal-input-container" style="width: flex; margin: 60px auto;">
-      <h2 style="margin-bottom: 24px; text-align: center;">Select Language & Difficulty</h2>
-      <form id="lang-diff-form" method="post" style="display: flex; flex-direction: column; gap: 16px;">
-        <select name="language" style="padding: 8px; border-radius: 4px; border: 1px solid #ccc;">
-          {% for code, lang in languages.items() %}
-            <option value="{{ code }}">{{ lang }}</option>
-          {% endfor %}
-        </select>
-        <div class="difficulty-row">
-          <div class="difficulty-blob easy selected" data-difficulty="easy">Easy</div>
-          <div class="difficulty-blob medium" data-difficulty="medium">Medium</div>
-          <div class="difficulty-blob hard" data-difficulty="hard">Hard</div>
-          <div class="difficulty-blob crazy" data-difficulty="crazy">Crazy</div>
-        </div>
-        <input type="hidden" name="difficulty" id="difficulty-input" value="easy">
-        <button type="submit"><b>Start Game</b></button>
-        {% if highest_score is not none %}
-        <p style="text-align: center; margin-top: 0px; margin-bottom: 0px;">Highest Score: {{ highest_score }}</p>
-        {% endif %}
-      </form>
+      <div id="main-container" style="max-width: 750px; margin: 0 auto;">
+      <div class="rules-box" style="width: 100%; margin: 30px auto 18px auto; padding: 18px 20px; box-sizing: border-box;">
+          <b style="font-size: 1.08em;">Rules</b>
+          <ul style="margin-top: 10px; margin-bottom: 0; padding-left: 22px;">
+            <li>Ask questions in English, Gemini will reply only in your chosen language.</li>
+            <li>No direct translations or explanations are allowed.</li>
+            <li>If you try to get a translation, Gemini will refuse.</li>
+            <li>You have 3 attempts to write the goal sentence in the target language.</li>
+            <li>Use the chat to discover words and grammar by context!</li>
+            <li>Use the word list to take notes!</li>
+          </ul>
+      </div>
+      <div id="goal-input-container" class="result-box" style="width: 100%; margin: 0 auto 0 auto; padding: 18px 20px; box-sizing: border-box;">
+        <div style="font-size: 1.08em; font-weight: bold; margin-bottom: 10px; color: #222;">Select Language & Difficulty</div>
+        <form id="lang-diff-form" method="post" style="display: flex; flex-direction: column; gap: 16px;">
+          <select name="language" style="padding: 8px; border-radius: 4px; border: 1px solid #ccc;">
+            {% for code, lang in languages.items() %}
+              <option value="{{ code }}">{{ lang }}</option>
+            {% endfor %}
+          </select>
+          <div class="difficulty-row">
+            <div class="difficulty-blob easy selected" data-difficulty="easy">Easy</div>
+            <div class="difficulty-blob medium" data-difficulty="medium">Medium</div>
+            <div class="difficulty-blob hard" data-difficulty="hard">Hard</div>
+            <div class="difficulty-blob crazy" data-difficulty="crazy">Crazy</div>
+          </div>
+          <input type="hidden" name="difficulty" id="difficulty-input" value="easy">
+          <button type="submit"><b>Start Game</b></button>
+          {% if highest_score is not none %}
+          <p style="text-align: center; margin-top: 0px; margin-bottom: 0px;">Highest Score: {{ highest_score }}</p>
+          {% endif %}
+        </form>
+      </div>
     </div>
   </div>
   <script>
