@@ -17,7 +17,6 @@ body {
   flex: 1;
   display: flex;
   flex-direction: column;
-  min-height: 0;
   gap: 24px;
 }
 #goal-input-container {
@@ -118,14 +117,14 @@ body {
   background: violet;
 }
 #chat-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
   background: whitesmoke;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
   padding: 24px;
-  display: flex;
-  flex-direction: column;
-  height: auto;
-  flex: 1;
+  overflow-y: auto;
 }
 #chat {
   flex: 1;
