@@ -2,11 +2,18 @@ body {
   font-family: 'Noto Sans', 'Segoe UI', 'Roboto', Arial, sans-serif;
   background: lightsteelblue;
 }
-#main-container {
-  max-width: 600px;
+#page-wrapper {
+  display: flex;
+  max-width: 1000px;
   margin: 40px auto;
+  gap: 24px;
+  align-items: stretch;
+}
+#main-container {
+  flex: 1;
   display: flex;
   flex-direction: column;
+  min-height: 0;
   gap: 24px;
 }
 #goal-input-container {
@@ -26,6 +33,78 @@ body {
   gap: 8px;
   align-items: center;
 }
+
+#sidebar-container {
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: whitesmoke;
+  padding: 16px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+#word-list {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.word-entry-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.word-entry {
+  display: grid;
+  grid-template-columns: 3fr 3fr 1fr 1fr;
+  align-items: center;
+  gap: 8px;
+  background: white;
+  padding: 4px 6px;
+  border-radius: 4px;
+  flex: 1;
+}
+.word-entry .editable {
+  overflow-x: hidden;
+  padding: 2px 4px;
+  border-radius: 3px;
+  cursor: text;
+}
+.word-entry .editable:focus {
+  outline: 2px solid dodgerblue;
+  background-color: #eef6ff;
+}
+.word-entry button {
+  padding: 8px 8px;
+  background: none;
+  border: none;
+  font-size: 1.2em;
+  cursor: pointer;
+}
+.word-entry button:hover {
+  background: #fffbe6;
+  transform: scale(1.2);
+}
+#word-list-input {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: auto;
+}
+#clear-list-btn {
+  margin-top: 4px;
+  background: darkred;
+}
+#word-list-input input {
+  padding: 6px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+
 #replay-btn {
   background: mediumvioletred;
   color: #fff;
