@@ -61,12 +61,15 @@ def select_language():
 
 @app.route("/game")
 def game():
-    session['conversation'] = []  # Initialize conversation history
+    session['conversation'] = []
+    session['hearts'] = 3
+    session['attempts'] = []
     language = session.get("language", "no")
     difficulty = session.get("difficulty", "easy")
     goals = load_goals(difficulty)
     goal = random.choice(goals)
-    return render_template("index.html", goal=goal, language=LANGUAGES[language], difficulty=difficulty)
+    session['goal'] = goal  # Store goal for result page
+    return render_template("index.html", goal=goal, language=LANGUAGES[language], difficulty=difficulty, hearts=session['hearts'])
 
 def ask_gemini(messages, language):
     # Add a new game instruction if this is the first message
@@ -108,27 +111,30 @@ def chat():
     language_code = session.get("language", "no")
     language = LANGUAGES[language_code]
     user_message = request.json["message"]
-    conversation = request.json.get("conversation", [])
+    conversation = session.get("conversation", [])
     conversation.append({"role": "user", "content": user_message})
     gemini_reply = ask_gemini(conversation, language)
     conversation.append({"role": "assistant", "content": gemini_reply})
+    session["conversation"] = conversation  # Persist conversation in session
 
     # Only use src if supported, else use auto-detect
     src_code = language_code if language_code in GT_LANGUAGES else "auto"
     translated = translator.translate(gemini_reply, src=src_code, dest="en")
-    translated_reply = translated.text
-
+    if isinstance(translated, list):
+        translated_reply = translated[0].text if translated and hasattr(translated[0], 'text') else str(translated)
+    else:
+        translated_reply = translated.text if hasattr(translated, 'text') else str(translated)
     return jsonify({"reply": gemini_reply, "translated_reply": translated_reply, "conversation": conversation})
 
 @app.route("/grade", methods=["POST"])
 def grade():
     language_code = session.get("language", "no")
     language = LANGUAGES[language_code]
-    data = request.json
-    attempt = data["attempt"]
-    goal = data["goal"]
+    data = request.json or {}
+    attempt = data.get("attempt", "")
+    goal = data.get("goal", "")
     grading_prompt = (
-        f"Grade the following {language} sentence from 1 to 10 for how well it matches the English goal sentence. "
+        f"Grade the following {language} sentence from 1 to 10 for how well it matches the English goal sentence. If the sentence is not in {language}, reply with 0 and explain that the sentence must be in {language}.\n"
         f"Be precise but not too strict, and make it clear for the player which words or grammar they did wrong. If the attempt is not perfect, provide a better translation.\n\n"
         f"Goal (English): \"{goal}\"\n"
         f"Player attempt: \"{attempt}\"\n"
@@ -151,18 +157,55 @@ def grade():
     import re
     match = re.match(r"Score:\s*(\d+).*Feedback:\s*(.*)", text, re.IGNORECASE | re.DOTALL)
     if match:
-        score = int(match.group(1))  # Convert score to integer
+        score = int(match.group(1))
         feedback = match.group(2).strip()
     else:
-        score = 0  # Default score if parsing fails
+        score = 0
         feedback = text
+    # Store attempts in session
+    attempts = session.get("attempts", [])
+    attempts.append({"attempt": attempt, "score": score, "feedback": feedback})
+    session["attempts"] = attempts
+    # Win condition
+    if score == 10:
+        session["result"] = "win"
+        return jsonify({"score": score, "redirect": url_for("result")})
+    # Lose condition
+    if len(attempts) >= 3:
+        session["result"] = "lose"
+        return jsonify({"score": score, "redirect": url_for("result")})
+    # Continue game, only show score (no feedback)
+    return jsonify({"score": score, "hearts": 3 - len(attempts)})
 
-    # Update the highest score in the session
-    highest_score = session.get("highest_score", 0)
-    if score > highest_score:
-        session["highest_score"] = score
-
-    return jsonify({"score": score, "feedback": feedback})
+@app.route("/result")
+def result():
+    attempts = session.get("attempts", [])
+    result = session.get("result", "lose")
+    goal = session.get("goal", "")
+    language = session.get("language", "no")
+    conversation = session.get("conversation", [])
+    # Translate all Gemini replies in the conversation to English for the result page
+    translated_conversation = []
+    for msg in conversation:
+        if msg["role"] == "assistant":
+            src_code = language if language in GT_LANGUAGES else "auto"
+            translated = translator.translate(str(msg["content"]), src=src_code, dest="en")
+            # googletrans may return a list if input is a list, so handle both cases
+            if isinstance(translated, list):
+                translation_text = translated[0].text if translated and hasattr(translated[0], 'text') else str(translated)
+            else:
+                translation_text = translated.text if hasattr(translated, 'text') else str(translated)
+            translated_conversation.append({"role": "assistant", "content": msg["content"], "translation": translation_text})
+        else:
+            translated_conversation.append({"role": msg["role"], "content": msg["content"]})
+    return render_template(
+        "result.html",
+        attempts=attempts,
+        result=result,
+        goal=goal,
+        language=LANGUAGES.get(language, language),
+        conversation=translated_conversation
+    )
 
 if __name__ == "__main__":
     app.run(debug=True)

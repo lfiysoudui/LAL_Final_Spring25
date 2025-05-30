@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ "Congratulations!" if result == "win" else "Sorry, you lose!" }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div id="page-wrapper">
+        <div id="main-container">
+            <h1 style="text-align: center;">{{ "🎉 Congratulations, you win! 🎉" if result == "win" else "Sorry, you lose!" }}</h1>
+            <div id="goal-container" class="result-box">
+                <b>Goal sentence:</b>
+                <span id="goal-sentence">{{ goal }}</span>
+            </div>
+            <div id="result-flex-row" style="display: flex; flex-direction: row; gap: 32px; align-items: flex-start;">
+                <div id="conversation-container" class="result-box" style="background: #f8f8f8; flex: 1; min-width: 0;">
+                    <b>Conversation History:</b>
+                    <div id="chat" style="margin-top: 12px; display: flex; flex-direction: column; gap: 0;">
+                        {% for msg in conversation %}
+                            {% if msg.role == 'user' %}
+                                <div class="msg user"><b>You:</b> {{ msg.content }}</div>
+                            {% elif msg.role == 'assistant' %}
+                                <div class="msg gemini"><b>Gemini:</b> {{ msg.content }}
+                                    <div style="color: #888; font-size: 0.98em; margin-top: 4px;">Translation: {{ msg.translation }}</div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+                <div id="attempts-container" class="result-box" style="flex: 1; min-width: 0;">
+                    <b>Your Attempts:</b><br>
+                    <ol>
+                        {% for a in attempts %}
+                        <li>
+                            <b>Your answer:</b> {{ a.attempt }}<br>
+                            <b>Score:</b> {{ a.score }} / 10<br>
+                            <b>Feedback:</b> {{ a.feedback }}<br>
+                        </li>
+                        {% endfor %}
+                    </ol>
+                </div>
+            </div>
+            <div style="display: flex; justify-content: center; margin-top: 18px;">
+                <a href="{{ url_for('select_language') }}" class="pink-btn" style="font-size: 1.08em; padding: 10px 32px; min-width: unset; text-decoration: none; box-shadow: none;">Start a New Game</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -5,12 +5,10 @@ function appendMessage(role, content) {
   const msgDiv = document.createElement('div');
   msgDiv.className = 'msg ' + (role === 'user' ? 'user' : role === 'gemini' ? 'gemini' : 'translate');
   msgDiv.innerHTML = `<b>${role === 'user' ? 'User' : role === 'gemini' ? 'Gemini' : 'Translate'}:</b> ${content}`;
+  // Remove translation display during the game
+  // Only show translation on result page
   if (role === 'translate') {
     msgDiv.style.display = 'none';
-    document.getElementById('grade-btn').addEventListener('click', () => {
-      const translateMessages = chat.querySelectorAll('.translate');
-      translateMessages.forEach(msg => msg.style.display = 'block');
-    });
   }
   chat.appendChild(msgDiv);
   chat.scrollTop = chat.scrollHeight;
@@ -51,8 +49,6 @@ function gradeAttempt() {
   const attempt = document.getElementById('attempt').value.trim();
   const goal = document.getElementById('goal-sentence').textContent.trim();
   if (!attempt) return;
-  if (!window.confirm("Are you sure you want to submit this answer for grading?")) return;
-
   document.getElementById('grade-btn').disabled = true;
   document.getElementById('attempt').disabled = true;
   document.getElementById('grade-result').textContent = "Grading...";
@@ -64,17 +60,18 @@ function gradeAttempt() {
   })
   .then(res => res.json())
   .then(data => {
-    document.getElementById('grade-result').textContent = `Score: ${data.score} / 10. ${data.feedback}`;
-    document.getElementById('replay-btn').style.display = 'inline-block';
-    document.getElementById('grade-btn').style.display = 'none';
-    // Disable chat input and send button
-    document.getElementById('input').disabled = true;
-    document.querySelector('#input-row button').disabled = true;
+    if (data.redirect) {
+      window.location.href = data.redirect;
+    } else {
+      document.getElementById('grade-result').textContent = `Score: ${data.score} / 10`;
+      if (data.hearts !== undefined) updateHearts(data.hearts);
+      document.getElementById('grade-btn').disabled = false;
+      document.getElementById('attempt').disabled = false;
+      document.getElementById('attempt').value = '';
+    }
   })
   .catch(() => {
-    document.getElementById('grade-result').textContent = "Sorry, grading failed.";
-    document.getElementById('grade-btn').disabled = false;
-    document.getElementById('attempt').disabled = false;
+    document.getElementById('grade-result').textContent = "Error grading attempt.";
   });
 }
 
@@ -206,3 +203,14 @@ document.addEventListener('DOMContentLoaded', () => {
   renderWordList();
   document.getElementById('clear-list-btn').onclick = clearWordList;
 });
+
+function updateHearts(hearts) {
+  const heartsContainer = document.getElementById('hearts-container');
+  heartsContainer.innerHTML = ''; // Clear existing hearts
+  for (let i = 0; i < hearts; i++) {
+    const heartSpan = document.createElement('span');
+    heartSpan.className = 'heart';
+    heartSpan.textContent = '❤️';
+    heartsContainer.appendChild(heartSpan);
+  }
+}

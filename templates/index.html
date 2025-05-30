@@ -8,6 +8,11 @@
 <body>
   <div id="page-wrapper">
     <div id="main-container">
+      <div id="hearts-container">
+        {% for i in range(hearts) %}
+          <span class="heart">❤️</span>
+        {% endfor %}
+      </div>
       <div id="goal-input-container">
         <div id="goal-container">
           <b>Goal sentence:</b>
