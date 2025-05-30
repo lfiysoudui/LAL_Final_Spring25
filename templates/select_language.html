@@ -4,57 +4,6 @@
   <title>No Translation! Setting</title>
   <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <style>
-    .difficulty-row {
-      display: flex;
-      justify-content: center;
-      gap: 24px;
-      margin-top: 24px;
-      margin-bottom: 16px;
-    }
-    .difficulty-blob {
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: bold;
-      font-size: 14px;
-      color: #fff;
-      cursor: pointer;
-      transition: transform 0.1s, box-shadow 0.1s;
-      border: 3px solid transparent;
-    }
-    .difficulty-blob.selected.easy {
-      box-shadow: 0 0 6px 3px #4caf50;
-      transform: scale(1.15);
-    }
-    .difficulty-blob.selected.medium {
-      box-shadow: 0 0 6px 3px #2196f3;
-      transform: scale(1.15);
-    }
-    .difficulty-blob.selected.hard {
-      box-shadow: 0 0 6px 3px #ff9800;
-      transform: scale(1.15);
-    }
-    .difficulty-blob.selected.crazy {
-      box-shadow: 0 0 6px 3px #e91e63;
-      transform: scale(1.15);
-    }
-    .easy { background: #4caf50; }
-    .medium { background: #2196f3; }
-    .hard { background: #ff9800; }
-    .crazy { background: #e91e63; }
-    .rules-box {
-      background: whitesmoke;
-      border-radius: 8px;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.07);
-      padding: 18px 20px;
-      margin-bottom: 18px;
-      font-size: 1.05em;
-    }
-  </style>
 </head>
 <body>
       <div id="main-container" style="max-width: 750px; margin: 0 auto;">
