@@ -4,7 +4,7 @@ function appendMessage(role, content) {
   const chat = document.getElementById('chat');
   const msgDiv = document.createElement('div');
   msgDiv.className = 'msg ' + (role === 'user' ? 'user' : role === 'gemini' ? 'gemini' : 'translate');
-  msgDiv.innerHTML = `<b>${role === 'user' ? 'user' : role === 'gemini' ? 'gemini' : 'translate'}:</b> ${content}`;
+  msgDiv.innerHTML = `<b>${role === 'user' ? 'User' : role === 'gemini' ? 'Gemini' : 'Translate'}:</b> ${content}`;
   if (role === 'translate') {
     msgDiv.style.display = 'none';
     document.getElementById('grade-btn').addEventListener('click', () => {
