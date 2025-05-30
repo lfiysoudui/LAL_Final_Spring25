@@ -6,24 +6,36 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-  <div id="main-container">
-    <div id="goal-input-container">
-      <div id="goal-container">
-        <b>Goal sentence:</b>
-        <span id="goal-sentence">{{ goal }}</span>
+  <div id="page-wrapper">
+    <div id="main-container">
+      <div id="goal-input-container">
+        <div id="goal-container">
+          <b>Goal sentence:</b>
+          <span id="goal-sentence">{{ goal }}</span>
+        </div>
+        <div id="grade-container">
+          <input id="attempt" autocomplete="off" placeholder="Write the goal sentence in {{ language }}..." />
+          <button id="grade-btn">Grade</button>
+          <button id="replay-btn" style="display:none;">Replay</button>
+        </div>
+        <span id="grade-result"></span>
       </div>
-      <div id="grade-container">
-        <input id="attempt" autocomplete="off" placeholder="Write the goal sentence in {{ language }}..." />
-        <button id="grade-btn">Grade</button>
-        <button id="replay-btn" style="display:none;">Replay</button>
+      <div id="chat-container">
+        <div id="chat"></div>
+        <div id="input-row">
+          <input id="input" autocomplete="off" placeholder="Type your message..." />
+          <button onclick="send()">Send</button>
+        </div>
       </div>
-      <span id="grade-result"></span>
     </div>
-    <div id="chat-container">
-      <div id="chat"></div>
-      <div id="input-row">
-        <input id="input" autocomplete="off" placeholder="Type your message..." />
-        <button>Send</button>
+    <div id="sidebar-container">
+      <b>Word list:</b>
+      <div id="word-list"></div>
+      <div id="word-list-input">
+        <input id="new-word" placeholder="New word"/>
+        <input id="new-translation" placeholder="What could this mean?"/>
+        <button onclick="addWord()">Add</button>
+        <button id="clear-list-btn">Clear All</button>
       </div>
     </div>
   </div>

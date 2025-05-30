@@ -4,7 +4,7 @@ function appendMessage(role, content) {
   const chat = document.getElementById('chat');
   const msgDiv = document.createElement('div');
   msgDiv.className = 'msg ' + (role === 'user' ? 'user' : role === 'gemini' ? 'gemini' : 'translate');
-  msgDiv.innerHTML = `<b>${role === 'user' ? 'user' : role === 'gemini' ? 'gemini' : 'translate'}:</b> ${content}`;
+  msgDiv.innerHTML = `<b>${role === 'user' ? 'User' : role === 'gemini' ? 'Gemini' : 'Translate'}:</b> ${content}`;
   if (role === 'translate') {
     msgDiv.style.display = 'none';
     document.getElementById('grade-btn').addEventListener('click', () => {
@@ -104,4 +104,105 @@ document.addEventListener('DOMContentLoaded', () => {
     if (e.key === 'Enter') gradeAttempt();
   });
   document.getElementById('grade-btn').addEventListener('click', gradeAttempt);
+});
+
+
+
+
+
+
+const wordListEl = document.getElementById('word-list');
+const inputEl = document.getElementById('input');
+
+function loadWordList() {
+  const data = localStorage.getItem('wordList');
+  return data ? JSON.parse(data) : [];
+}
+
+function saveWordList(words) {
+  localStorage.setItem('wordList', JSON.stringify(words));
+}
+
+function renderWordList() {
+  wordListEl.innerHTML = '';
+  const words = loadWordList();
+
+  words.forEach(({ word, translation }, index) => {
+    const entryContainer = document.createElement('div');
+    entryContainer.className = 'word-entry-container';
+
+    const entry = document.createElement('div');
+    entry.className = 'word-entry';
+
+    const wordSpan = document.createElement('span');
+    wordSpan.className = 'editable';
+    wordSpan.contentEditable = 'true';
+    wordSpan.textContent = word;
+    wordSpan.addEventListener('input', () => updateWord(index, wordSpan.textContent, translationSpan.textContent));
+
+    const translationSpan = document.createElement('span');
+    translationSpan.className = 'editable';
+    translationSpan.contentEditable = 'true';
+    translationSpan.textContent = translation;
+    translationSpan.addEventListener('input', () => updateWord(index, wordSpan.textContent, translationSpan.textContent));
+
+    const insertBtn = document.createElement('button');
+    insertBtn.textContent = '➕';
+    insertBtn.title = 'Insert word';
+    insertBtn.onclick = () => {
+      inputEl.value += (inputEl.value ? ' ' : '') + wordSpan.textContent;
+      inputEl.focus();
+    };
+
+    const deleteBtn = document.createElement('button');
+    deleteBtn.textContent = '❌';
+    deleteBtn.title = 'Delete word';
+    deleteBtn.onclick = () => {
+      words.splice(index, 1);
+      saveWordList(words);
+      renderWordList();
+    };
+
+    entry.appendChild(wordSpan);
+    entry.appendChild(translationSpan);
+    entry.appendChild(insertBtn);
+    entry.appendChild(deleteBtn);
+
+    entryContainer.appendChild(entry);
+
+    wordListEl.appendChild(entryContainer);
+  });
+}
+
+function updateWord(index, newWord, newTranslation) {
+  const words = loadWordList();
+  words[index] = { word: newWord, translation: newTranslation };
+  saveWordList(words);
+}
+
+function addWord() {
+  const word = document.getElementById('new-word').value.trim();
+  const translation = document.getElementById('new-translation').value.trim();
+  if (!word || !translation) return;
+
+  const words = loadWordList();
+  words.push({ word, translation });
+  saveWordList(words);
+  renderWordList();
+
+  document.getElementById('new-word').value = '';
+  document.getElementById('new-translation').value = '';
+}
+
+function clearWordList() {
+  if (confirm('Are you sure you want to clear all saved words?')) {
+    localStorage.removeItem('wordList');
+    renderWordList();
+  }
+}
+
+// Setup
+document.addEventListener('DOMContentLoaded', () => {
+  renderWordList();
+  document.getElementById('clear-list-btn').onclick = clearWordList;
 });

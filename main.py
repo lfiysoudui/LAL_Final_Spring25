@@ -92,7 +92,7 @@ def ask_gemini(messages, language):
         "contents": [
             {
                 "parts": [
-                    {"text": f"{rule_prompt}\n\"{conversation_text}\"\nNow, please answer the player in {language}. Do not translate their message into {language}, just respond the way a human friend would do."}
+                    {"text": f"{rule_prompt}\n\"{conversation_text}\"\nNow, please answer the player in {language}. Do not translate their message into {language}, just respond them the way a human friend would do. Remember to be friendly and helpful, and answer in simple but complete sentences."}
                 ]
             }
         ]
