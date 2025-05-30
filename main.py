@@ -1,6 +1,8 @@
 from flask import Flask, request, jsonify, render_template, session, redirect, url_for
 from dotenv import load_dotenv
-import os, requests, random, secrets
+import os, requests, random, secrets, googletrans
+from googletrans import Translator
+import asyncio
 
 app = Flask(__name__)
 app.secret_key = secrets.token_hex(32)
@@ -8,6 +10,8 @@ app.secret_key = secrets.token_hex(32)
 GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent"
 load_dotenv()
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+
+translator = Translator()
 
 LANGUAGES = {
     "no": "Norwegian",        # Germanic (Indo-European)
@@ -107,7 +111,14 @@ def chat():
     conversation.append({"role": "user", "content": user_message})
     gemini_reply = ask_gemini(conversation, language)
     conversation.append({"role": "assistant", "content": gemini_reply})
-    return jsonify({"reply": gemini_reply, "conversation": conversation})
+
+    # Translate Gemini response to English
+    async def translate_reply():
+        return await translator.translate(gemini_reply, src=language_code, dest="en")
+
+    loop = asyncio.get_event_loop()
+    translated_reply = loop.run_until_complete(translate_reply()).text
+    return jsonify({"reply": gemini_reply, "translated_reply": translated_reply, "conversation": conversation})
 
 @app.route("/grade", methods=["POST"])
 def grade():

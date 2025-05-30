@@ -3,8 +3,15 @@ let conversation = [];
 function appendMessage(role, content) {
   const chat = document.getElementById('chat');
   const msgDiv = document.createElement('div');
-  msgDiv.className = 'msg ' + (role === 'user' ? 'user' : 'gemini');
-  msgDiv.innerHTML = `<b>${role === 'user' ? 'You' : 'Gemini'}:</b> ${content}`;
+  msgDiv.className = 'msg ' + (role === 'user' ? 'user' : role === 'gemini' ? 'gemini' : 'translate');
+  msgDiv.innerHTML = `<b>${role === 'user' ? 'user' : role === 'gemini' ? 'gemini' : 'translate'}:</b> ${content}`;
+  if (role === 'translate') {
+    msgDiv.style.display = 'none';
+    document.getElementById('grade-btn').addEventListener('click', () => {
+      const translateMessages = chat.querySelectorAll('.translate');
+      translateMessages.forEach(msg => msg.style.display = 'block');
+    });
+  }
   chat.appendChild(msgDiv);
   chat.scrollTop = chat.scrollHeight;
 }
@@ -28,6 +35,7 @@ function send() {
   .then(data => {
     conversation = data.conversation;
     appendMessage('gemini', data.reply);
+    appendMessage('translate', data.translated_reply);
   })
   .catch(() => {
     appendMessage('gemini', 'Sorry, something went wrong.');
