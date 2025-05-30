@@ -53,7 +53,8 @@ def select_language():
         session["language"] = request.form["language"]
         session["difficulty"] = request.form["difficulty"]
         return redirect(url_for("game"))
-    return render_template("select_language.html", languages=LANGUAGES)
+    highest_score = session.get("highest_score", None)  # Get the highest score from the session
+    return render_template("select_language.html", languages=LANGUAGES, highest_score=highest_score)
 
 @app.route("/game")
 def game():
@@ -132,11 +133,17 @@ def grade():
     import re
     match = re.match(r"Score:\s*(\d+).*Feedback:\s*(.*)", text, re.IGNORECASE | re.DOTALL)
     if match:
-        score = match.group(1)
+        score = int(match.group(1))  # Convert score to integer
         feedback = match.group(2).strip()
     else:
-        score = "?"
+        score = 0  # Default score if parsing fails
         feedback = text
+
+    # Update the highest score in the session
+    highest_score = session.get("highest_score", 0)
+    if score > highest_score:
+        session["highest_score"] = score
+
     return jsonify({"score": score, "feedback": feedback})
 
 if __name__ == "__main__":
