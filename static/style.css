@@ -1,13 +1,17 @@
 body {
   font-family: 'Noto Sans', 'Segoe UI', 'Roboto', Arial, sans-serif;
   background: lightsteelblue;
+  margin: 0;
 }
 #page-wrapper {
   display: flex;
+  flex-direction: row;
   max-width: 1000px;
-  margin: 40px auto;
+  height: 100vh;
+  box-sizing: border-box;
+  margin: auto;
+  padding: 60px 40px;
   gap: 24px;
-  align-items: stretch;
 }
 #main-container {
   flex: 1;
@@ -43,6 +47,7 @@ body {
   padding: 16px;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  height: auto;
 }
 #word-list {
   flex: 1;
@@ -104,7 +109,6 @@ body {
   border: 1px solid #ccc;
 }
 
-
 #replay-btn {
   background: mediumvioletred;
   color: #fff;
@@ -120,12 +124,14 @@ body {
   padding: 24px;
   display: flex;
   flex-direction: column;
-  height: 480px;
+  height: auto;
+  flex: 1;
 }
 #chat {
   flex: 1;
   min-height: 0;
-  max-height: 400px;
+  /* max-height: 400px; */
+  height: auto;
   overflow-y: auto;
   margin-bottom: 16px;
   background: #f8f8f8;
