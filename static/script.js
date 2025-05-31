@@ -205,6 +205,9 @@ function clearWordList() {
 document.addEventListener('DOMContentLoaded', () => {
   renderWordList();
   document.getElementById('clear-list-btn').onclick = clearWordList;
+  document.getElementById('new-translation').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') addWord();
+  });
 });
 
 function updateHearts(hearts) {
