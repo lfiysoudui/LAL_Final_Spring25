@@ -48,6 +48,8 @@ def load_goals(difficulty):
 
 @app.route("/")
 def index():
+    session.clear
+    session['new_game'] = True
     return redirect(url_for("select_language"))
 
 @app.route("/select_language", methods=["GET", "POST"])
@@ -61,16 +63,36 @@ def select_language():
 
 @app.route("/game")
 def game():
-    session['conversation'] = []
-    session['hearts'] = 3
-    session['attempts'] = []
     language = session.get("language", "no")
     difficulty = session.get("difficulty", "easy")
-    goals = load_goals(difficulty)
-    goal = random.choice(goals)
-    session['goal'] = goal  # Store goal for result page
-    return render_template("index.html", goal=goal, language=LANGUAGES[language], difficulty=difficulty, hearts=session['hearts'])
+    hearts = session.get("hearts", 3)
+    conversation = session.get("conversation", [])
+    
+    if session.get("new_game", True):
+        # proper init
+        goals = load_goals(difficulty)
+        goal = random.choice(goals)
+        session['goal'] = goal
+        session['hearts'] = 3
+        session['attempts'] = []
+        session['new_game'] = False
+        session['hearts'] = 3
+        session['attempts'] = []
+        session['conversation'] = []
+        session['result'] = None
+    else:
+        # continue previous game
+        goal = session.get("goal")
 
+    return render_template(
+        "index.html",
+        goal=goal,
+        language=LANGUAGES.get(language, "¯\_(ツ)_/¯"),
+        difficulty=difficulty,
+        hearts=hearts,
+        conversation=conversation
+    )
+    
 def ask_gemini(messages, language):
     # Add a new game instruction if this is the first message
     if len(messages) == 1 and messages[0]["role"] == "user":
@@ -166,6 +188,7 @@ def grade():
     attempts = session.get("attempts", [])
     attempts.append({"attempt": attempt, "score": score, "feedback": feedback})
     session["attempts"] = attempts
+    session['hearts'] -= 1
     # Win condition
     if score == 10:
         session["result"] = "win"
@@ -198,6 +221,8 @@ def result():
             translated_conversation.append({"role": "assistant", "content": msg["content"], "translation": translation_text})
         else:
             translated_conversation.append({"role": msg["role"], "content": msg["content"]})
+            
+    session['new_game'] = True
     return render_template(
         "result.html",
         attempts=attempts,
