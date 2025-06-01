@@ -65,7 +65,6 @@ def select_language():
 def game():
     language = session.get("language", "no")
     difficulty = session.get("difficulty", "easy")
-    hearts = session.get("hearts", 3)
     conversation = session.get("conversation", [])
     
     if session.get("new_game", True):
@@ -84,6 +83,8 @@ def game():
         # continue previous game
         goal = session.get("goal")
 
+    hearts = session.get("hearts", 3)
+    
     return render_template(
         "index.html",
         goal=goal,
