@@ -164,18 +164,48 @@ def grade():
     else:
         score = 0
         feedback = text
+    
     # Store attempts in session
     attempts = session.get("attempts", [])
     attempts.append({"attempt": attempt, "score": score, "feedback": feedback})
     session["attempts"] = attempts
+    
     # Win condition
     if score == 10:
         session["result"] = "win"
         return jsonify({"score": score, "redirect": url_for("result")})
-    # Lose condition
-    if len(attempts) >= 3:
+    
+    # Last Chance logic
+    last_chance = session.get("last_chance", False)
+    if len(attempts) >= 3 and not last_chance:
+        # Enter Last Chance mode
+        session["last_chance"] = True
+        # Translate conversation for the user
+        conversation = session.get("conversation", [])
+        translated_conversation = []
+        for msg in conversation:
+            if msg["role"] == "assistant":
+                src_code = language if language in GT_LANGUAGES else "auto"
+                translated = translator.translate(str(msg["content"]), src=src_code, dest="en")
+                if isinstance(translated, list):
+                    translation_text = translated[0].text if translated and hasattr(translated[0], 'text') else str(translated)
+                else:
+                    translation_text = translated.text if hasattr(translated, 'text') else str(translated)
+                translated_conversation.append({"role": "assistant", "content": msg["content"], "translation": translation_text})
+            else:
+                translated_conversation.append({"role": msg["role"], "content": msg["content"]})
+        return jsonify({
+            "score": score,
+            "last_chance": True,
+            "translated_conversation": translated_conversation
+        })
+    
+    # If already in Last Chance, this is the final attempt
+    if last_chance:
         session["result"] = "lose"
+        session["last_chance"] = False
         return jsonify({"score": score, "redirect": url_for("result")})
+
     # Continue game, only show score (no feedback)
     return jsonify({"score": score, "hearts": 3 - len(attempts)})
 
