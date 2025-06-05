@@ -15,24 +15,26 @@ translator = Translator()
 
 LANGUAGES = {
     "no": "Norwegian",        # Germanic (Indo-European)
+    "de": "German",          # Germanic (Indo-European)
+    "fr": "French",          # Romance (Indo-European)
     "es": "Spanish",          # Romance (Indo-European)
     "ru": "Russian",          # Slavic (Indo-European)
-    "el": "Greek",            # Hellenic (Indo-European)
+    # "el": "Greek",            # Hellenic (Indo-European)
+    "fi": "Finnish",          # Uralic
+    # "hu": "Hungarian",        # Uralic
     "tr": "Turkish",          # Turkic
     "ar": "Arabic",           # Semitic (Afro-Asiatic)
-    "he": "Hebrew",           # Semitic (Afro-Asiatic)
+    # "he": "Hebrew",           # Semitic (Afro-Asiatic)
     "zh-cn": "Mandarin",         # Sino-Tibetan
-    "yue": "Cantonese",       # Sino-Tibetan
+    # "yue": "Cantonese",       # Sino-Tibetan
     "ja": "Japanese",         # Japonic
     "ko": "Korean",           # Koreanic
     "vi": "Vietnamese",       # Austroasiatic
     "th": "Thai",             # Kra–Dai
     "hi": "Hindi",            # Indic (Indo-European)
-    "bn": "Bengali",          # Indic (Indo-European)
-    "fi": "Finnish",          # Uralic
-    "hu": "Hungarian",        # Uralic
+    # "bn": "Bengali",          # Indic (Indo-European)
     "ms": "Malay",            # Austronesian
-    "id": "Indonesian",       # Austronesian
+    # "id": "Indonesian",       # Austronesian
     "ta": "Tamil",            # Dravidian
     "fa": "Persian",          # Iranian (Indo-European)
 }
