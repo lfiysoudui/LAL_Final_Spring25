@@ -66,6 +66,7 @@ def game():
     session['conversation'] = []
     session['hearts'] = 3
     session['attempts'] = []
+    session['last_chance'] = False
     language = session.get("language", "no")
     difficulty = session.get("difficulty", "easy")
     goals = load_goals(difficulty)

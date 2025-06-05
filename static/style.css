@@ -228,11 +228,6 @@ button:disabled {
     display: flex;
     gap: 1px;
 }
-#hearts-container .last-chance {
-  color: orange;
-  font-weight: bold;
-  font-size: 1.2em;
-}
 .heart {
     color: var(--color-heart);
     transition: color 0.2s;

@@ -75,6 +75,9 @@ function gradeAttempt() {
   })
   .catch(() => {
     document.getElementById('grade-result').textContent = "Error grading attempt.";
+    // Re-enable grading controls so user can try again
+    document.getElementById('grade-btn').disabled = false;
+    document.getElementById('attempt').disabled = false;
   });
 }
 
@@ -244,8 +247,14 @@ function showLastChance(translatedConversation) {
     chat.appendChild(msgDiv);
   });
 
+  // Hide chat input and send button during last chance
+  const inputRow = document.getElementById('input-row');
+  if (inputRow) {
+    inputRow.style.display = 'none';
+  }
+
   // Enable input for the last chance
-  document.getElementById('grade-result').textContent = "This is your last chance! Review the conversation above (with translations) and try again.";
+  document.getElementById('grade-result').textContent = "This is your last chance! Review the conversation below (with translations) and try again.";
   document.getElementById('grade-btn').disabled = false;
   document.getElementById('attempt').disabled = false;
   document.getElementById('attempt').value = '';
