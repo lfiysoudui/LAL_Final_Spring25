@@ -10,8 +10,8 @@
     <div id="main-container">
       <div id="goal-input-container">
         <div id="hearts-container">
-          {% for i in range(hearts) %}
-            <span class="heart">❤️</span>
+          {% for i in range(3) %}
+            <span class="heart">{{ '❤️' if i < hearts else '🖤' }}</span>
           {% endfor %}
         </div>
         <div id="goal-container">

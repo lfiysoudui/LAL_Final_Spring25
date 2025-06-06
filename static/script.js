@@ -1,10 +1,10 @@
-let conversation = [];
+let conversation = localStorage.getItem('conversation') ? JSON.parse(localStorage.getItem('conversation')) : [];
 
 function appendMessage(role, content) {
   const chat = document.getElementById('chat');
   const msgDiv = document.createElement('div');
-  msgDiv.className = 'msg ' + (role === 'user' ? 'user' : role === 'gemini' ? 'gemini' : 'translate');
-  msgDiv.innerHTML = `<b>${role === 'user' ? 'User' : role === 'gemini' ? 'Gemini' : 'Translate'}:</b> ${content}`;
+  msgDiv.className = 'msg ' + (role === 'user' ? 'user' : (role === 'gemini' || role === 'assistant') ? 'gemini' : 'translate');
+  msgDiv.innerHTML = `<b>${role === 'user' ? 'User' : (role === 'gemini' || role === 'assistant') ? 'Gemini' : 'Translate'}:</b> ${content}`;
   // Remove translation display during the game
   // Only show translation on result page
   if (role === 'translate') {
@@ -34,6 +34,8 @@ function send() {
     conversation = data.conversation;
     appendMessage('gemini', data.reply);
     appendMessage('translate', data.translated_reply);
+    
+    localStorage.setItem('conversation', JSON.stringify(conversation));
   })
   .catch(() => {
     appendMessage('gemini', 'Sorry, something went wrong.');
@@ -98,6 +100,7 @@ function showReplayButton() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+  conversation.forEach(({role, content}) => appendMessage(role, content));
   document.getElementById('input').addEventListener('keydown', function(e) {
     if (e.key === 'Enter') send();
   });
@@ -208,6 +211,9 @@ function clearWordList() {
 document.addEventListener('DOMContentLoaded', () => {
   renderWordList();
   document.getElementById('clear-list-btn').onclick = clearWordList;
+  document.getElementById('new-translation').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') addWord();
+  });
 });
 
 function updateHearts(hearts) {
