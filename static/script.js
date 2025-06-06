@@ -64,6 +64,9 @@ function gradeAttempt() {
   .then(data => {
     if (data.redirect) {
       window.location.href = data.redirect;
+    } else if (data.last_chance) {
+      // Enter Last Chance mode
+      showLastChance(data.translated_conversation);
     } else {
       document.getElementById('grade-result').textContent = `Score: ${data.score} / 10`;
       if (data.hearts !== undefined) updateHearts(data.hearts);
@@ -74,6 +77,9 @@ function gradeAttempt() {
   })
   .catch(() => {
     document.getElementById('grade-result').textContent = "Error grading attempt.";
+    // Re-enable grading controls so user can try again
+    document.getElementById('grade-btn').disabled = false;
+    document.getElementById('attempt').disabled = false;
   });
 }
 
@@ -219,4 +225,43 @@ function updateHearts(hearts) {
     heartSpan.textContent = i < hearts ? '❤️' : '🖤';
     heartsContainer.appendChild(heartSpan);
   }
+}
+
+function showLastChance(translatedConversation) {
+  // Replace hearts with "Last Chance!"
+  const heartsContainer = document.getElementById('hearts-container');
+  heartsContainer.innerHTML = '';
+  const lastChanceSpan = document.createElement('span');
+  lastChanceSpan.style.color = 'orange';
+  lastChanceSpan.style.fontWeight = 'bold';
+  lastChanceSpan.style.fontSize = '1.2em';
+  lastChanceSpan.textContent = 'Last Chance!';
+  heartsContainer.appendChild(lastChanceSpan);
+
+  // Show translated conversation
+  const chat = document.getElementById('chat');
+  chat.innerHTML = '';
+  translatedConversation.forEach(msg => {
+    const msgDiv = document.createElement('div');
+    if (msg.role === 'user') {
+      msgDiv.className = 'msg user';
+      msgDiv.innerHTML = `<b>You:</b> ${msg.content}`;
+    } else if (msg.role === 'assistant') {
+      msgDiv.className = 'msg gemini';
+      msgDiv.innerHTML = `<b>Gemini:</b> ${msg.content}<div style="color: #888; font-size: 0.98em; margin-top: 4px;">Translation: ${msg.translation}</div>`;
+    }
+    chat.appendChild(msgDiv);
+  });
+
+  // Hide chat input and send button during last chance
+  const inputRow = document.getElementById('input-row');
+  if (inputRow) {
+    inputRow.style.display = 'none';
+  }
+
+  // Enable input for the last chance
+  document.getElementById('grade-result').textContent = "This is your last chance! Review the conversation below (with translations) and try again.";
+  document.getElementById('grade-btn').disabled = false;
+  document.getElementById('attempt').disabled = false;
+  document.getElementById('attempt').value = '';
 }
